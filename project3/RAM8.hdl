@@ -1,0 +1,42 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/3/a/RAM8.hdl
+/**
+ * Memory of eight 16-bit registers.
+ * If load is asserted, the value of the register selected by
+ * address is set to in; Otherwise, the value does not change.
+ * The value of the selected register is emitted by out.
+ */
+CHIP RAM8 {
+    IN in[16], load, address[3];
+    OUT out[16];
+
+    // 3 Address Bits to select from 8 registers
+    // Feed the in value to all registers simultaneously
+    // Use Mux/DMux to select the right register
+
+    // DETAILS
+    // We have 8 registers, only one of which should get the load signal based on the address
+    // Use DMux8Way to fan out the load signal to one selected register at a time based on address selector
+    // When address=000, dmux produces (load, 0, 0, 0, 0, 0, 0, 0), load is only asserted on register 1
+    // When address=001, dmux produces (0, load, 0, 0, 0, 0, 0, 0), load is only asserted on register 2
+    // ......
+    // When address=110, dmux produces (0, 0, 0, 0, 0, 0, load, 0), load is only asserted on register 7
+    // When address=111, dmux produces (0, 0, 0, 0, 0, 0, 0, load), load is only asserted on register 8
+    // Now we can send the dmux output to the registers
+    // Voila, based on address, load is asserted on the corresponding register (0 to 7)
+    PARTS:
+    DMux8Way(in=load , sel=address , a=a , b=b , c=c , d=d , e=e , f=f , g=g , h=h );
+    Register(in=in , load=a , out=outa );
+    Register(in=in , load=b , out=outb );
+    Register(in=in , load=c , out=outc );
+    Register(in=in , load=d , out=outd );
+    Register(in=in , load=e , out=oute );
+    Register(in=in , load=f , out=outf );
+    Register(in=in , load=g , out=outg );
+    Register(in=in , load=h , out=outh );
+
+    // Now, select the output from the register we want based on the address
+    Mux8Way16(a=outa , b=outb , c=outc , d=outd , e=oute , f=outf , g=outg, h=outh , sel=address , out=out);
+}

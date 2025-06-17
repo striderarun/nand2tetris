@@ -1,0 +1,37 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/3/b/RAM16K.hdl
+/**
+ * Memory of 16K 16-bit registers.
+ * If load is asserted, the value of the register selected by
+ * address is set to in; Otherwise, the value does not change.
+ * The value of the selected register is emitted by out.
+ */
+CHIP RAM16K {
+    IN in[16], load, address[14];
+    OUT out[16];
+
+    // We have 16384 registers, so we need log16384 = 14 address bits
+    // However, we are building it using 4 RAM4K parts
+    // So use first 2 address bits to select the RAM4K part. 
+    // Send the next 12 address bits to the selected RAM4K part 
+    // The RAM4K part uses first 3 bits to select one of it's 8 RAM512 parts
+    // The RAM512 part uses the next 3 bits to select one of it's 8 RAM64 parts
+    // The RAM64 part uses the next 3 bits to select one of it's 8 RAM8 parts
+    // The RAM8 part uses the last 3 bits to select one of it's 8 registers
+
+    PARTS:
+    // Fan out the load to the 4 RAM4K parts based on first 2 bits of address selector
+    // First 2 bits to determine which RAM4K part
+    DMux4Way(in=load , sel=address[12..13] , a=a , b=b , c=c , d=d);
+
+    // Next 12 bits to select the RAM4K part
+    RAM4K(in=in , load=a , address=address[0..11] , out=outa );
+    RAM4K(in=in , load=b , address=address[0..11] , out=outb );
+    RAM4K(in=in , load=c , address=address[0..11] , out=outc );
+    RAM4K(in=in , load=d , address=address[0..11] , out=outd );
+    
+    // Now, select the RAM4K part which has the output based on first 2 bits of address
+    Mux4Way16(a=outa , b=outb , c=outc , d=outd , sel=address[12..13] , out=out);
+}
