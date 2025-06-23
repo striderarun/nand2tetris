@@ -1,0 +1,111 @@
+class Calculator {
+
+   field int width, height;
+
+   constructor Calculator new() {
+      let width = 56;
+      let height = 6;
+      do draw();
+      return this;
+   }
+
+   method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   /** Draw the calculator display bar. */
+   method void draw() {
+      var int i;
+      // Draw dashes from (1,1) to (1,55)
+      let i=1;
+      while(i < width) {
+         do Output.moveCursor(1,i);
+         do Output.printChar("-");
+         let i = i+1;
+      }
+
+      // Draw dashes from (1,1) to (5,1)
+      let i=1;
+      while(i < height) {
+         do Output.moveCursor(i,1);
+         do Output.printChar("-");
+         let i = i+1;
+      }
+
+      // Draw dashes from (5,1) to (5,55)
+      let i=1;
+      while(i < width) {
+         do Output.moveCursor(5,i);
+         do Output.printChar("-");
+         let i = i+1;
+      }
+
+      // Draw dashes from (1,55) to (5,55)
+      let i=1;
+      while(i < height) {
+         do Output.moveCursor(i,55);
+         do Output.printChar("-");
+         let i = i+1;
+      }
+      do Output.println();
+      return;
+   }
+
+   /** Compute the result and render in the display bar of the Calculator. */
+   method void renderCalculation(int opA, int opB, String op) {
+      var int result;
+      
+      // Display the operand A
+      do Output.moveCursor(3,3);
+      do Output.printInt(opA);
+
+      // Display the operator
+      do Output.moveCursor(3,6);
+      do Output.printString(op);
+
+      // Display the operand B
+      do Output.moveCursor(3,9);
+      do Output.printInt(opB);
+
+      // Display the = symbol
+      do Output.moveCursor(3,12);
+      do Output.printString("=");
+
+      // Compute the result
+      let result = calculate(opA, opB, op);
+
+      // Display the calculated result
+      do Output.moveCursor(3,15);
+      do Output.printInt(result);
+
+      return;
+
+   }
+
+   /** Calculate the result. */
+   method int calculate(int opA, int opB, String op) {
+      var int result;
+      // In Jack Character Set, + is 43
+      if (op.charAt(0) = 43) {
+         let result = opA + opB;
+      } 
+
+      // In Jack Character Set, * is 42
+      if (op.charAt(0) = 42) {
+         let result = opA * opB;
+      } 
+
+      // In Jack Character Set, - is 45
+      if (op.charAt(0) = 45) {
+         let result = opA - opB;
+      } 
+
+      // In Jack Character Set, / is 47
+      if (op.charAt(0) = 47) {
+         let result = opA / opB;
+      } 
+      return result;
+   }
+
+}
