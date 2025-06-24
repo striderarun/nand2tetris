@@ -1,0 +1,50 @@
+/**
+ * Implements a very basic Calculator App.
+ * The app asks the user to provide the following: 
+ * Two numbers for input operands.
+ * A supported operator (+, -, *, /)
+ * The App calculates the result and renders it in a result bar at the top of the screen.
+ */
+class CalculatorApp {
+   field Calculator calculator; 
+
+   constructor CalculatorApp new() {
+      let calculator = Calculator.new();
+      return this;
+   }
+
+   method void dispose() {
+      do calculator.dispose();
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   method void run() {
+      var int operandA, operandB, result, continue;
+      var String operator;
+
+      do Output.println();
+
+      // get first operand
+      let operandA = Keyboard.readInt("Enter first number: ");
+
+      // get the second operand
+      let operandB = Keyboard.readInt("Enter second number: ");
+
+      // get the operator
+      let operator = Keyboard.readLine("Choose an operator (+, -, *, /): ");
+
+      // calculate and render the result
+      do calculator.renderCalculation(operandA, operandB, operator);
+
+      do Output.moveCursor(10,1);
+      do Output.printString("Computed the result!");
+      do Output.println();
+      do Output.printString("Thank you for trying it out!!");
+
+      return;
+   }
+}
+
+
+
